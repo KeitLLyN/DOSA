@@ -15,12 +15,12 @@ import java.util.Map;
 @Controller
 public class RegistrationController {
     private final UserRepository USER_REPOSITORY;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder PASSWORD_ENCODER;
 
     @Autowired
-    public RegistrationController(UserRepository USER_REPOSITORY) {
+    public RegistrationController(UserRepository USER_REPOSITORY, PasswordEncoder PASSWORD_ENCODER) {
         this.USER_REPOSITORY = USER_REPOSITORY;
+        this.PASSWORD_ENCODER = PASSWORD_ENCODER;
     }
 
     @GetMapping("/registration")
@@ -38,7 +38,7 @@ public class RegistrationController {
 
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         USER_REPOSITORY.save(user);
         return "redirect:/login";
     }
