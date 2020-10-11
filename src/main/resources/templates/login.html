@@ -19,6 +19,7 @@ Login page
 	<div><label> User Name : <input type="text" name="username"/> </label></div>
 	<div><label> Password: <input type="password" name="password"/> </label></div>
 	<div><input type="submit" value="Sign In"/></div>
+	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 </form>
 <a href="/registration">Or Sigh Up</a>
 
