@@ -11,8 +11,42 @@
 	<p><b>Have a nice day.</b></p>
 	<form th:action="@{/logout}" method="post">
 		<input type="submit" value="Sign Out"/>
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	</form>
 </div>
+
+<div>
+	<form method="post" th:action="@{/main}">
+		<label for="text">Сообщение</label>
+		<input id="text" type="text" name="text"/>
+
+		<label for="tag">Тэг</label>
+		<input id="tag" type="text" name="tag"/>
+
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+		<button type="submit">Добавить</button>
+	</form>
+</div>
+
+<div>Список сообщений</div>
+
+<div>
+	<form method="get" th:action="@{/main}">
+		<label for="filter">Фильтр</label>
+		<input id="filter" type="text" name="filter"/>
+		<button type="submit">Найти</button>
+	</form>
+</div>
+
+
+<div th:each="message : ${messages}">
+	<b th:text="${message.id}"></b>
+	<span th:text="${message.text}"></span>
+	<i th:text="${message.tag}"></i>
+	<strong th:text="${message.authorName}"></strong>
+</div>
+
 
 </body>
 </html>
