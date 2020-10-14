@@ -11,8 +11,13 @@
 	<p><b>Have a nice day.</b></p>
 	<form th:action="@{/logout}" method="post">
 		<input type="submit" value="Sign Out"/>
-		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 	</form>
+	<span><a href="/user">See all users</a></span>
+</div>
+
+<div th:if="${param.error}">
+	<p><b> Some Error</b></p>
 </div>
 
 <div>
@@ -23,7 +28,7 @@
 		<label for="tag">Тэг</label>
 		<input id="tag" type="text" name="tag"/>
 
-		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
 		<button type="submit">Добавить</button>
 	</form>
@@ -40,13 +45,35 @@
 </div>
 
 
-<div th:each="message : ${messages}">
-	<b th:text="${message.id}"></b>
-	<span th:text="${message.text}"></span>
-	<i th:text="${message.tag}"></i>
-	<strong th:text="${message.authorName}"></strong>
+<div>
+	<table>
+		<thead>
+		<tr>
+			<th>ID</th>
+			<th>Text</th>
+			<th>Tag</th>
+			<th>Author</th>
+			<th>Action</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="message : ${messages}">
+			<td th:text="${message.id}"></td>
+			<td th:text="${message.text}"></td>
+			<td th:text="${message.tag}"></td>
+			<td th:text="${message.authorName}"></td>
+			<td>
+				<form method="post" th:action="@{/delete}">
+					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+					<input type="hidden" name="message_id" th:value="${message.id}">
+					<input type="hidden" name="user_id" th:value="${message.author.id}">
+					<button name="delete" type="submit">Удалить</button>
+				</form>
+			</td>
+		</tr>
+		</tbody>
+	</table>
 </div>
-
 
 </body>
 </html>
