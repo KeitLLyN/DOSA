@@ -4,13 +4,12 @@ import com.security.university.entity.Message;
 import com.security.university.entity.Role;
 import com.security.university.entity.User;
 import com.security.university.repository.MessageRepository;
+import com.security.university.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class MainController {
@@ -50,13 +49,13 @@ public class MainController {
         return "main";
     }
 
-    @PostMapping("/delete")
-    public String delete(@RequestParam String message_id,
+    @PostMapping(value = "/delete/{id}")
+    public String delete(@PathVariable("id") Long id,
                          @RequestParam String user_id,
                          @AuthenticationPrincipal User user) {
         if (user_id.equals(user.getId().toString()) || user.getRoles().contains(Role.ADMIN)) {
-            MESSAGE_REPOSITORY.deleteById(Long.parseLong(message_id));
+            MESSAGE_REPOSITORY.deleteById(id);
         }
-        return "main";
+        return "redirect:/main";
     }
 }
