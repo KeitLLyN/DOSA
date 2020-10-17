@@ -63,7 +63,7 @@
 			<td th:text="${message.tag}"></td>
 			<td th:text="${message.authorName}"></td>
 			<td>
-				<form method="post" th:action="@{/delete}">
+				<form th:method="DELETE" th:action="@{/delete/{id}(id = ${message.id})}">
 					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 					<input type="hidden" name="message_id" th:value="${message.id}">
 					<input type="hidden" name="user_id" th:value="${message.author.id}">
