@@ -4,7 +4,6 @@ import com.security.university.entity.Message;
 import com.security.university.entity.Role;
 import com.security.university.entity.User;
 import com.security.university.repository.MessageRepository;
-import com.security.university.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -33,7 +32,7 @@ public class MainController {
         }
         model.addAttribute("messages", messages);
         model.addAttribute("filter", filter);
-        model.addAttribute("isAdmin", user.getRoles().contains(Role.ADMIN));
+        model.addAttribute("isAdmin", user.isAdmin());
         return "main";
     }
 
@@ -49,7 +48,7 @@ public class MainController {
         return "main";
     }
 
-    @PostMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public String delete(@PathVariable("id") Long id,
                          @RequestParam String user_id,
                          @AuthenticationPrincipal User user) {
