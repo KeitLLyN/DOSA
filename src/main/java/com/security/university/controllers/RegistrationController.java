@@ -60,6 +60,6 @@ public class RegistrationController {
         user.setRoles(Collections.singleton(Role.USER));
         user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         USER_REPOSITORY.save(user);
-        return "redirect:/login";
+        return "redirect:/";
     }
 }
