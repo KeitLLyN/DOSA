@@ -2,8 +2,10 @@ package com.security.university.config;
 
 import com.security.university.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
     private final UserService USER_SERVICE;
+
+    @Value("${security.require-ssl}")
+    private boolean requireHttps;
 
     @Autowired
     public WebSecurityConfig(UserService userService) {
@@ -26,21 +32,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+        if (requireHttps){
+            http
+                    .authorizeRequests()
                     .antMatchers("/", "/registration").permitAll()
                     .anyRequest().authenticated()
-                .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-                .and()
-                    .logout()
-                    .permitAll()
-                .and()
-                    .requiresChannel()
-                    .anyRequest()
-                    .requiresSecure();
+                    .and()
+                        .formLogin()
+                        .loginPage("/login")
+                        .permitAll()
+                    .and()
+                        .logout()
+                        .permitAll()
+                    .and()
+                        .requiresChannel()
+                        .anyRequest()
+                        .requiresSecure();
+        }
     }
 
     @Override
