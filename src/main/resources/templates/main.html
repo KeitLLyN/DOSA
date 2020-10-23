@@ -9,7 +9,7 @@
 <div>
 	<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
 	<p><b>Have a nice day.</b></p>
-	<form th:action="@{/logout}" method="post">
+	<form th:method="POST" th:action="@{/logout}">
 		<input type="submit" value="Sign Out"/>
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 	</form>
@@ -21,12 +21,12 @@
 </div>
 
 <div>
-	<form method="post" th:action="@{/main}">
+	<form th:method="POST" th:action="@{/main}" th:object="${message}">
 		<label for="text">Сообщение</label>
-		<input id="text" type="text" name="text"/>
+		<input id="text" type="text" th:field="*{text}"/>
 
 		<label for="tag">Тэг</label>
-		<input id="tag" type="text" name="tag"/>
+		<input id="tag" type="text" th:field="*{tag}"/>
 
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
@@ -37,7 +37,7 @@
 <div>Список сообщений</div>
 
 <div>
-	<form method="get" th:action="@{/main}">
+	<form th:method="GET" th:action="@{/main}">
 		<label for="filter">Фильтр</label>
 		<input id="filter" type="text" name="filter"/>
 		<button type="submit">Найти</button>
@@ -65,7 +65,6 @@
 			<td>
 				<form th:method="DELETE" th:action="@{/delete/{id}(id = ${message.id})}">
 					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-					<input type="hidden" name="message_id" th:value="${message.id}">
 					<input type="hidden" name="user_id" th:value="${message.author.id}">
 					<button name="delete" type="submit">Удалить</button>
 				</form>
