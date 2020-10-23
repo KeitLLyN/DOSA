@@ -2,21 +2,27 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
 	<title>Registration</title>
+	<script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 
 <body>
 <div th:if="${isExist}">
 	Such user is already exist!
 </div>
+<div th:if="${captchaError}">
+	<b>Please verify the captcha</b>
+</div>
 Add new User
 <form th:action="@{/registration}" method="post">
 	<div><label> User Name : <input type="text" name="username"/> </label></div>
 	<div><label> Password: <input type="password" name="password"/> </label></div>
-	<div><input type="submit" value="Sign Up"/></div>
+	<div class="g-recaptcha" data-sitekey="6LdQ4NkZAAAAAJ-kZ1PY_bmYVInH-ssiFap9YobI"></div>
+	<br/>
+	<button id='submit'>submit</button>
 	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-<!--	<input type="hidden" name="_csrf" value="{{_csrf.token}}" />-->
 </form>
 
 </body>
+
 
 </html>
