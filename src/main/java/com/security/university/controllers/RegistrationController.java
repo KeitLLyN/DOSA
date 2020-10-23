@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +28,15 @@ public class RegistrationController {
 
     @Value("${recaptcha.secret}")
     private String secret;
+
+    @Value("${password.length.min}")
+    private int passwordMinLength;
+
+    @Value("${username.length.max}")
+    private int usernameMaxLength;
+
+    @Value("${username.length.min}")
+    private int usernameMinLength;
 
     @Autowired
     public RegistrationController(UserRepository userRepository, PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
@@ -47,7 +57,15 @@ public class RegistrationController {
         String url = String.format(CAPTCHA_URL, secret, captchaResponse);
         CaptchaResponseDto response = REST_TEMPLATE.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
         if (response != null && !response.isSuccess()) {
-            model.addAttribute("captchaError", "Fill the captcha");
+            model.addAttribute("captchaError", true);
+            return "registration";
+        }
+        if (user.getUsername().length() < usernameMinLength || user.getUsername().length() > usernameMaxLength){
+            model.addAttribute("usernameWrongLength", true);
+            return "registration";
+        }
+        if (user.getPassword().length() < passwordMinLength){
+            model.addAttribute("passwordWrongLength",true);
             return "registration";
         }
         User userFromDB = USER_REPOSITORY.findByUsername(user.getUsername());
@@ -61,5 +79,20 @@ public class RegistrationController {
         user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         USER_REPOSITORY.save(user);
         return "redirect:/";
+    }
+
+    @ModelAttribute("usernameMin")
+    private int getUsernameMinLength(){
+        return usernameMinLength;
+    }
+
+    @ModelAttribute("usernameMax")
+    private int getUsernameMaxLength(){
+        return usernameMaxLength;
+    }
+
+    @ModelAttribute("passwordMin")
+    private int getPasswordMinLength(){
+        return passwordMinLength;
     }
 }
