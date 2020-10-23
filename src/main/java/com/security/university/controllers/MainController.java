@@ -38,23 +38,24 @@ public class MainController {
 
     @PostMapping("/main")
     public String add(@AuthenticationPrincipal User user,
-                      @RequestParam String text,
-                      @RequestParam String tag,
-                      Model model) {
-        Message message = new Message(text, tag, user);
+                      @ModelAttribute Message message) {
+        message.setAuthor(user);
         MESSAGE_REPOSITORY.save(message);
-        Iterable<Message> messages = MESSAGE_REPOSITORY.findAll();
-        model.addAttribute("messages", messages);
-        return "main";
+        return "redirect:/main";
     }
 
     @DeleteMapping(value = "/delete/{id}")
     public String delete(@PathVariable("id") Long id,
-                         @RequestParam String user_id,
+                         @RequestParam Long user_id,
                          @AuthenticationPrincipal User user) {
-        if (user_id.equals(user.getId().toString()) || user.getRoles().contains(Role.ADMIN)) {
+        if (user_id.equals(user.getId()) || user.getRoles().contains(Role.ADMIN)) {
             MESSAGE_REPOSITORY.deleteById(id);
         }
         return "redirect:/main";
+    }
+
+    @ModelAttribute("message")
+    public Message message(){
+        return new Message();
     }
 }
