@@ -13,14 +13,14 @@
 	<b>Please verify the captcha</b>
 </div>
 <div th:if="${usernameWrongLength}">
-	<span> Username must be between </span>
+	<i> Username must be between </i>
 	<b th:text="${usernameMin}"></b>
-	<span> and </span>
+	<i> and </i>
 	<b th:text="${usernameMax}"></b> <span> character</span>
 </div>
 
 <div th:if="${passwordWrongLength}">
-	<span>Password couldn't be less then </span> <b th:text="${passwordMin}"></b> <span> symbols</span>
+	<i>Password couldn't be less then </i> <b th:text="${passwordMin}"></b> <i> symbols</i>
 </div>
 Add new User
 <form th:action="@{/registration}" method="post">
