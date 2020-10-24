@@ -54,6 +54,11 @@ public class MainController {
         return "redirect:/main";
     }
 
+    @GetMapping("/main/error")
+    public String error(){
+        return "error";
+    }
+
     @ModelAttribute("message")
     public Message message(){
         return new Message();
