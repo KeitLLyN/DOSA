@@ -1,12 +1,10 @@
 package com.security.university.controllers;
 
-import com.security.university.entity.Role;
 import com.security.university.entity.User;
 import com.security.university.entity.dto.CaptchaResponseDto;
-import com.security.university.repository.UserRepository;
+import com.security.university.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +18,8 @@ import java.util.Collections;
 @Controller
 public class RegistrationController {
 
-    private final UserRepository USER_REPOSITORY;
-    private final PasswordEncoder PASSWORD_ENCODER;
+    private final UserService USER_SERVICE;
+
     private final RestTemplate REST_TEMPLATE;
 
     private final static String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
@@ -39,9 +37,8 @@ public class RegistrationController {
     private int usernameMinLength;
 
     @Autowired
-    public RegistrationController(UserRepository userRepository, PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
-        this.USER_REPOSITORY = userRepository;
-        this.PASSWORD_ENCODER = passwordEncoder;
+    public RegistrationController(UserService userService, RestTemplate restTemplate) {
+        this.USER_SERVICE = userService;
         this.REST_TEMPLATE = restTemplate;
     }
 
@@ -64,20 +61,14 @@ public class RegistrationController {
             model.addAttribute("usernameWrongLength", true);
             return "registration";
         }
-        if (user.getPassword().length() < passwordMinLength){
-            model.addAttribute("passwordWrongLength",true);
+        if (user.getPassword().length() < passwordMinLength) {
+            model.addAttribute("passwordWrongLength", true);
             return "registration";
         }
-        User userFromDB = USER_REPOSITORY.findByUsername(user.getUsername());
-        if (userFromDB != null) {
+        if (!USER_SERVICE.addUser(user)) {
             model.addAttribute("isExist", true);
             return "registration";
         }
-
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-        user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
-        USER_REPOSITORY.save(user);
         return "redirect:/";
     }
 
