@@ -25,11 +25,12 @@
 Add new User
 <form th:action="@{/registration}" method="post">
 	<div><label> User Name : <input type="text" name="username"/> </label></div>
+	<div><label>Email: <input type="email" name="email"/></label></div>
 	<div><label> Password: <input type="password" name="password"/> </label></div>
 	<div class="g-recaptcha" data-sitekey="6LdQ4NkZAAAAAJ-kZ1PY_bmYVInH-ssiFap9YobI"></div>
 	<br/>
 	<button id='submit'>submit</button>
-	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 </form>
 
 </body>
