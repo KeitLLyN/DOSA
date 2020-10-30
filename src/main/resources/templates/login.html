@@ -12,8 +12,7 @@
 <div th:if="${param.logout}">
 	<b><i>You have been logged out.</i></b>
 </div>
-<p></p>
-
+<div th:text="${activateMessage}"></div>
 Login page
 <form th:action="@{/login}" method="post">
 	<div><label> User Name : <input type="text" name="username"/> </label></div>
