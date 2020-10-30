@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
@@ -72,13 +69,24 @@ public class RegistrationController {
         return "redirect:/";
     }
 
+    @GetMapping("/activate/{code}")
+    public String activate(@PathVariable String code, Model model) {
+        boolean isActivated = USER_SERVICE.activateUser(code);
+        if (isActivated) {
+            model.addAttribute("activateMessage", "User successfully activated");
+        } else {
+            model.addAttribute("activateMessage", "Activation code is not found!");
+        }
+        return "login";
+    }
+
     @ModelAttribute("usernameMin")
-    private int getUsernameMinLength(){
+    private int getUsernameMinLength() {
         return usernameMinLength;
     }
 
     @ModelAttribute("usernameMax")
-    private int getUsernameMaxLength(){
+    private int getUsernameMaxLength() {
         return usernameMaxLength;
     }
 
