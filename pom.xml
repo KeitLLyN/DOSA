@@ -13,6 +13,7 @@
         <maven.compiler.target>14</maven.compiler.target>
         <spring.version>5.2.8.RELEASE</spring.version>
         <spring.boot.version>2.3.3.RELEASE</spring.boot.version>
+
     </properties>
 
     <dependencies>
@@ -64,6 +65,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
             <version>${spring.boot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+            <version>2.3.1.RELEASE</version>
         </dependency>
 
         <dependency>
@@ -136,3 +143,4 @@
     </build>
 
 </project>
+
