@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
@@ -14,10 +16,15 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
+    @Size(min = 3, max = 15, message = "Name must be between 3 and 15 symbols")
     private String username;
+
+    @NotNull
     private String password;
     private boolean isActive;
 
+    @NotNull(message = "Email couldn't be empty")
     private String email;
     private String activationCode;
 
