@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Valid;
 import java.util.Collections;
 
 @Controller
@@ -24,15 +26,6 @@ public class RegistrationController {
     @Value("${recaptcha.secret}")
     private String secret;
 
-    @Value("${password.length.min}")
-    private int passwordMinLength;
-
-    @Value("${username.length.max}")
-    private int usernameMaxLength;
-
-    @Value("${username.length.min}")
-    private int usernameMinLength;
-
     @Autowired
     public RegistrationController(UserService userService, RestTemplate restTemplate) {
         this.USER_SERVICE = userService;
@@ -40,13 +33,14 @@ public class RegistrationController {
     }
 
     @GetMapping("/registration")
-    public String registration() {
+    public String registration(@ModelAttribute("user") User user) {
         return "registration";
     }
 
     @PostMapping("/registration")
     public String addUser(@RequestParam("g-recaptcha-response") String captchaResponse,
-                          User user,
+                          @Valid User user,
+                          BindingResult bindingResult,
                           Model model) {
         String url = String.format(CAPTCHA_URL, secret, captchaResponse);
         CaptchaResponseDto response = REST_TEMPLATE.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
@@ -54,14 +48,11 @@ public class RegistrationController {
             model.addAttribute("captchaError", true);
             return "registration";
         }
-        if (user.getUsername().length() < usernameMinLength || user.getUsername().length() > usernameMaxLength){
-            model.addAttribute("usernameWrongLength", true);
+
+        if (bindingResult.hasErrors()) {
             return "registration";
         }
-        if (user.getPassword().length() < passwordMinLength) {
-            model.addAttribute("passwordWrongLength", true);
-            return "registration";
-        }
+
         if (!USER_SERVICE.addUser(user)) {
             model.addAttribute("isExist", true);
             return "registration";
@@ -78,20 +69,5 @@ public class RegistrationController {
             model.addAttribute("activateMessage", "Activation code is not found!");
         }
         return "login";
-    }
-
-    @ModelAttribute("usernameMin")
-    private int getUsernameMinLength() {
-        return usernameMinLength;
-    }
-
-    @ModelAttribute("usernameMax")
-    private int getUsernameMaxLength() {
-        return usernameMaxLength;
-    }
-
-    @ModelAttribute("passwordMin")
-    private int getPasswordMinLength(){
-        return passwordMinLength;
     }
 }
