@@ -12,21 +12,16 @@
 <div th:if="${captchaError}">
 	<b>Please verify the captcha</b>
 </div>
-<div th:if="${usernameWrongLength}">
-	<i> Username must be between </i>
-	<b th:text="${usernameMin}"></b>
-	<i> and </i>
-	<b th:text="${usernameMax}"></b> <span> character</span>
-</div>
-
-<div th:if="${passwordWrongLength}">
-	<i>Password couldn't be less then </i> <b th:text="${passwordMin}"></b> <i> symbols</i>
-</div>
 Add new User
-<form th:action="@{/registration}" method="post">
-	<div><label> User Name : <input type="text" name="username"/> </label></div>
-	<div><label>Email: <input type="email" name="email"/></label></div>
-	<div><label> Password: <input type="password" name="password"/> </label></div>
+<form th:action="@{/registration}" th:object="${user}" th:method="POST">
+	<div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+	<div><label> User Name : <input type="text" th:field="*{username}"/> </label></div>
+
+	<div><label>Email: <input type="email" th:field="*{email}"/></label></div>
+
+	<div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+	<div><label> Password: <input type="password" th:field="*{password}"/> </label></div>
+
 	<div class="g-recaptcha" data-sitekey="6LdQ4NkZAAAAAJ-kZ1PY_bmYVInH-ssiFap9YobI"></div>
 	<br/>
 	<button id='submit'>submit</button>
