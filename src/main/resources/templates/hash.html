@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hash</title>
+</head>
+<body>
+<div>
+    <form th:method="POST" th:action="@{/hash}">
+        <label for="hashText">Текст</label>
+        <input id="hashText" type="text" name="hashText"/>
+        <label>Способ<input type="text" name="algorithm"/></label>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit">Зашифровать</button>
+    </form>
+    <label th:text="${encodedText}"></label>
+</div>
+</body>
+</html>
